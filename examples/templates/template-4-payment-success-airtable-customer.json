@@ -1,0 +1,32 @@
+{
+  "name": "Template 4 - Payment Success Airtable Customer Record",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [220, 300],
+      "parameters": {
+        "events": ["payment_successful"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Create Customer Record",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [520, 300],
+      "parameters": {
+        "operation": "create",
+        "table": "Customers"
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Create Customer Record", "type": "main", "index": 0}]]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+.env
+.env.local
+.env*.local
+.vscode/
+*.log
+docs/technical_keys.md
+
+# Secrets — never commit
+docs/technical_keys.md

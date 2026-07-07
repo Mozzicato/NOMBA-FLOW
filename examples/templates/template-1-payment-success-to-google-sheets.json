@@ -1,0 +1,63 @@
+{
+  "name": "Template 1 - Payment Success to Google Sheets",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [220, 300],
+      "parameters": {
+        "events": ["payment_successful"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Prepare Row",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [460, 300],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "transactionId",
+              "value": "={{ $json.transaction.transactionId }}",
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "value": "={{ $json.transaction.transactionAmount }}",
+              "type": "number"
+            },
+            {
+              "name": "time",
+              "value": "={{ $json.transaction.time }}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3",
+      "name": "Append Payment",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [700, 300],
+      "parameters": {
+        "operation": "append",
+        "sheetName": "Payments"
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Prepare Row", "type": "main", "index": 0}]]
+    },
+    "Prepare Row": {
+      "main": [[{"node": "Append Payment", "type": "main", "index": 0}]]
+    }
+  }
+}

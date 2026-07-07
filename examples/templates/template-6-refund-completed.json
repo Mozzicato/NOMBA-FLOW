@@ -1,0 +1,48 @@
+{
+  "name": "Template 6 - Refund Completed",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [220, 320],
+      "parameters": {
+        "events": ["refund_completed"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Update CRM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [500, 260],
+      "parameters": {
+        "method": "POST",
+        "url": "https://example-crm.com/refunds"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Notify Support",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [760, 260],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#support",
+        "text": "Refund event received for transaction {{ $json.transaction.transactionId }}"
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Update CRM", "type": "main", "index": 0}]]
+    },
+    "Update CRM": {
+      "main": [[{"node": "Notify Support", "type": "main", "index": 0}]]
+    }
+  }
+}

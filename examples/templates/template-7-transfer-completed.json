@@ -1,0 +1,45 @@
+{
+  "name": "Template 7 - Transfer Completed",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [220, 320],
+      "parameters": {
+        "events": ["transfer_completed"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Send WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 260],
+      "parameters": {
+        "method": "POST",
+        "url": "https://example-whatsapp-gateway.com/send"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Archive Event",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [780, 260],
+      "parameters": {
+        "fileName": "={{ 'archive/' + $json.raw.requestId + '.json' }}"
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Send WhatsApp", "type": "main", "index": 0}]]
+    },
+    "Send WhatsApp": {
+      "main": [[{"node": "Archive Event", "type": "main", "index": 0}]]
+    }
+  }
+}

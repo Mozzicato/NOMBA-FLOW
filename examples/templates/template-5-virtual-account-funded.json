@@ -1,0 +1,69 @@
+{
+  "name": "Template 5 - Virtual Account Funded",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [200, 320],
+      "parameters": {
+        "events": ["virtual_account_funded"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Is Virtual Account Funding",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [440, 320],
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.event.type }}",
+              "operation": "equals",
+              "value2": "virtual_account_funded"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3",
+      "name": "Update Database",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [700, 260],
+      "parameters": {
+        "method": "POST",
+        "url": "https://example.com/internal/payments"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Notify Customer",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [940, 260],
+      "parameters": {
+        "fromEmail": "ops@example.com",
+        "toEmail": "={{ $json.raw.data.customer.email || 'customer@example.com' }}",
+        "subject": "Funds Received",
+        "text": "Your virtual account has been funded successfully."
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Is Virtual Account Funding", "type": "main", "index": 0}]]
+    },
+    "Is Virtual Account Funding": {
+      "main": [[{"node": "Update Database", "type": "main", "index": 0}], []]
+    },
+    "Update Database": {
+      "main": [[{"node": "Notify Customer", "type": "main", "index": 0}]]
+    }
+  }
+}

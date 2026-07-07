@@ -1,0 +1,34 @@
+{
+  "name": "Template 2 - Payment Success to Slack",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [220, 280],
+      "parameters": {
+        "events": ["payment_successful"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Notify Finance",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [500, 280],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#finance",
+        "text": "Payment success: {{ $json.transaction.transactionId }} amount={{ $json.transaction.transactionAmount }}"
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Notify Finance", "type": "main", "index": 0}]]
+    }
+  }
+}

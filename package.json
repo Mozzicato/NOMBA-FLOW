@@ -1,0 +1,69 @@
+{
+  "name": "nomba-flow",
+  "version": "0.1.0",
+  "description": "n8n community node for automating Nomba payment workflows.",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "n8n:up": "docker compose up",
+    "n8n:build": "npm run build && docker compose up",
+    "webhook:local": "node scripts/local-webhook-server.cjs",
+    "webhook:send": "node scripts/send-test-webhook.cjs",
+    "app:dev": "npm --prefix app run dev",
+    "app:build": "npm --prefix app run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/src/credentials/NombaApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/src/nodes/Nomba/Nomba.node.js",
+      "dist/src/nodes/NombaTrigger/NombaTrigger.node.js"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mozzicato/NOMBA-FLOW.git"
+  },
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "nomba",
+    "payments",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Mozzicato/NOMBA-FLOW/issues"
+  },
+  "homepage": "https://github.com/Mozzicato/NOMBA-FLOW#readme",
+  "peerDependencies": {
+    "n8n-workflow": ">=1.0.0"
+  },
+  "dependencies": {
+    "n8n-workflow": "^1.109.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.62.1",
+    "@typescript-eslint/parser": "^8.62.1",
+    "@vitest/coverage-v8": "^4.1.9",
+    "eslint": "^10.6.0",
+    "prettier": "^3.9.4",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}

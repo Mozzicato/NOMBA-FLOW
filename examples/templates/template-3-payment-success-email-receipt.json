@@ -1,0 +1,34 @@
+{
+  "name": "Template 3 - Payment Success Email Receipt",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Nomba Trigger",
+      "type": "n8n-nodes-base.nombaTrigger",
+      "typeVersion": 1,
+      "position": [220, 320],
+      "parameters": {
+        "events": ["payment_successful"],
+        "verifySignature": true
+      }
+    },
+    {
+      "id": "2",
+      "name": "Send Receipt",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [520, 320],
+      "parameters": {
+        "fromEmail": "billing@example.com",
+        "toEmail": "={{ $json.raw.data.customer.email || 'customer@example.com' }}",
+        "subject": "Payment Receipt",
+        "text": "We received your payment. Transaction ID: {{ $json.transaction.transactionId }}"
+      }
+    }
+  ],
+  "connections": {
+    "Nomba Trigger": {
+      "main": [[{"node": "Send Receipt", "type": "main", "index": 0}]]
+    }
+  }
+}

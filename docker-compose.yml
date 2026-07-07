@@ -1,0 +1,26 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: nomba-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      # Point n8n directly at our mounted package so it loads the Nomba nodes.
+      - N8N_CUSTOM_EXTENSIONS=/home/node/.n8n/custom/nomba-flow
+      # Public base URL used to build webhook URLs. Set this to your tunnel URL
+      # (e.g. https://xxxx.trycloudflare.com/) BEFORE `docker compose up` so the
+      # Nomba Trigger node shows the correct Production URL. Falls back to
+      # localhost for pure local testing.
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
+      - N8N_SECURE_COOKIE=false
+      - N8N_RUNNERS_ENABLED=true
+    volumes:
+      # Persist n8n data (credentials, workflows) across restarts.
+      - n8n_data:/home/node/.n8n
+      # Mount THIS project (with its built dist/) as a custom node package.
+      # Rebuild locally with `npm run build`, then restart the container to
+      # pick up changes.
+      - ./:/home/node/.n8n/custom/nomba-flow:ro
+
+volumes:
+  n8n_data:
